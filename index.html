@@ -1490,5 +1490,8 @@ render();
     if(await sha(v)===H){try{localStorage.setItem(K,H)}catch(x){}g.style.transition="opacity .4s";g.style.opacity=0;setTimeout(function(){g.remove()},400)}
     else{var er=document.getElementById("ge");er.textContent="הקוד לא נכון, נסו שוב";var i=document.getElementById("gc");i.classList.remove("shake");void i.offsetWidth;i.classList.add("shake")}});
 })();
-if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+// כשגרסה חדשה נכנסת לתוקף, טוענים מחדש פעם אחת כדי שהעדכון יופיע מיד
+if("serviceWorker" in navigator){const had=!!navigator.serviceWorker.controller;let re=false;
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!re){re=true;location.reload()}});
+  addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).catch(()=>{}))}
 </script>
