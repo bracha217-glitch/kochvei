@@ -222,6 +222,9 @@ details.sec .body{padding:0 16px 16px;display:flex;flex-direction:column;gap:12p
 .listrow .grow{flex:1;min-width:0}
 .listrow b{display:block}
 .listrow span{font-size:13px;color:var(--soft)}
+#taskOrder .listrow{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#taskOrder .listrow.dragging{position:relative;z-index:5;transform:scale(1.04);box-shadow:0 18px 30px -10px rgba(43,32,140,.55);outline:3px solid var(--sun)}
+#taskOrder.sorting .listrow:not(.dragging){transition:transform .15s}
 .stepper{display:flex;align-items:center;gap:6px}
 .stepper button{width:40px;height:40px;border-radius:12px;background:var(--grape-2);color:var(--grape);font-weight:700;font-size:20px}
 .stepper output{min-width:48px;text-align:center;font-family:var(--display);font-size:22px;font-weight:700}
@@ -232,6 +235,16 @@ details.sec .body{padding:0 16px 16px;display:flex;flex-direction:column;gap:12p
 .emojis button{font-size:24px;width:42px;height:42px;border-radius:12px;background:var(--ground)}
 .checks{display:flex;gap:8px;flex-wrap:wrap}
 .checks label{display:flex;align-items:center;gap:6px;background:var(--ground);border-radius:12px;padding:8px 10px;font-size:14px}
+.whens{display:flex;gap:8px;flex-wrap:wrap}
+.whens label{display:flex;align-items:center;gap:6px;background:#fff;border-radius:14px;padding:10px 12px;font-size:15px;font-weight:700;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line);cursor:pointer}
+.whens label:has(input:checked){background:var(--grape);color:#fff;box-shadow:0 4px 0 #2F2496}
+.field .whens input{position:absolute;opacity:0;width:1px;height:1px;padding:0;border:0;box-shadow:none;pointer-events:none}
+.whens label{position:relative}
+.whens label:has(input:focus-visible){outline:3px solid var(--sun);outline-offset:2px}
+.whenprev{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;background:var(--sun-2);border-radius:16px;padding:10px 12px;font-size:14px;line-height:1.5}
+.whenprev>b{flex-basis:100%}
+.whenprev span{background:#fff;border-radius:10px;padding:2px 9px}
+.whenprev small{flex-basis:100%;color:var(--soft)}
 
 /* חלון */
 .modal{position:fixed;inset:0;z-index:60;background:rgba(20,22,60,.55);display:flex;align-items:flex-end;justify-content:center;padding-top:env(safe-area-inset-top,0px)}
@@ -575,7 +588,9 @@ body{font-family:var(--body)}
     <div class="mascot" id="mascot" data-act="mascot" role="button" aria-label="כוכבי"><svg viewBox="0 0 100 100" id="mascotSvg"></svg><div class="bubble" id="bubble"></div></div>
     <div class="grow"><h1 id="appTitle">כוכבי הבית</h1><p id="campLine" class="num"></p></div>
     <button class="iconbtn" id="soundBtn" data-act="sound" aria-label="צליל"></button>
-  </header>
+  
+<meta name="NetsparkQuiltingResult" total-length="1053354" removed="0" rules-found="w10679,w1696,w3390,w3456,w2655,w3012,w2577,w73,w345,w4748,w4749,w4348,w5579,w5580,w5056,w30581,w339,w30270,w11756,w5539,r957s-202p1,w5206,w29886,r5188s-10p1,w6471,w5053,r4970s50p3,w6284,w3538,w11562,w6563,w9571,w30733,w30580,w17802,w30329,w19801,w31048,w19457,w30983,w21291,w30961,w21217,w30183,w30785,w6892,w9572,w9641,w21835,w31051,w340,w3180,w19577,w6223,w6224,w18241,w30244" />
+</header>
   <main id="view"></main>
 </div>
 <nav class="tabs" dir="rtl" aria-label="ניווט">
@@ -1254,7 +1269,8 @@ function vSettings(){
     ${S.kids.map(k=>`<button class="listrow" data-act="editKid" data-id="${k.id}">${av(k)}<span class="grow"><b>${esc(k.name)}</b><span>${g(k,"בן","בת")} ${k.age} · קימה ${k.wake} · שינה ${k.bed} · מסך ${k.screen} דק׳</span></span><span>✏️</span></button>`).join("")}
     <button class="btn ghost" data-act="addKid">+ הוספת ילד/ה</button></div></details>
   <details class="sec" id="sec-tasks"><summary>✅ משימות ונקודות</summary><div class="body">
-    ${S.tasks.map(t=>`<button class="listrow" data-act="editTask" data-id="${t.id}"><span style="font-size:28px">${esc(t.icon)}</span><span class="grow"><b>${esc(t.name)}</b><span>${t.points} נקודות${t.kids?" · "+t.kids.map(id=>(S.kids.find(k=>k.id===id)||{}).name).filter(Boolean).join(", "):" · כל הילדים"}</span></span><span>✏️</span></button>`).join("")}
+    ${S.tasks.length>1?`<p class="small muted" style="margin:0">כדי לשנות את הסדר: לוחצים לחיצה ארוכה על משימה וגוררים אותה למעלה או למטה. ככה הן יופיעו גם אצל הילדים.</p>`:""}
+    <div class="stack" id="taskOrder" style="gap:10px">${S.tasks.map(t=>`<button class="listrow" data-act="editTask" data-id="${t.id}"><span style="font-size:28px">${esc(t.icon)}</span><span class="grow"><b>${esc(t.name)}</b><span>${t.points} נקודות${t.kids?" · "+t.kids.map(id=>(S.kids.find(k=>k.id===id)||{}).name).filter(Boolean).join(", "):" · כל הילדים"}</span></span><span>✏️</span></button>`).join("")}</div>
     <button class="btn ghost" data-act="addTask">+ משימה חדשה</button></div></details>
   <details class="sec" id="sec-camp"><summary>🏁 המבצע</summary><div class="body">
     <div class="fields2"><div class="field"><label for="cStart">תאריך התחלה</label><input id="cStart" type="date" value="${S.campaign.start}" data-set="campStart"></div>
@@ -1318,9 +1334,10 @@ function taskForm(t){
     <div class="field"><label for="tfName">שם המשימה</label><input id="tfName" value="${esc(t.name)}" placeholder="למשל: הכנת שיעורי בית"></div></div>
     <div class="emojis">${EM.map(e=>`<button data-e="${e}">${e}</button>`).join("")}</div>
     <div class="field"><label>כמה נקודות</label><div class="stepper"><button id="tfMinus" aria-label="פחות">−</button><output id="tfPts" class="num">${t.points}</output><button id="tfPlus" aria-label="יותר">+</button></div></div>
-    <div class="fields2"><div class="field"><label for="tfTime">שעה ליד המשימה</label><select id="tfTime">
-      <option value="">בלי שעה</option><option value="wake" ${t.time==="wake"?"selected":""}>שעת הקימה של הילד</option><option value="bed" ${t.time==="bed"?"selected":""}>שעת השינה של הילד</option><option value="screen" ${t.time==="screen"?"selected":""}>זמן המסך של הילד</option><option value="fixed" ${fixed?"selected":""}>שעה קבועה</option></select></div>
-      <div class="field"><label for="tfFixed">שעה קבועה</label><input id="tfFixed" type="time" value="${fixed?t.time:"18:00"}"></div></div>
+    <div class="field"><label>מתי עושים את המשימה?</label><div class="whens">
+      ${[["","בלי שעה"],["wake","כשקמים בבוקר"],["bed","לפני השינה"],["fixed","בשעה מסוימת"],["screen","זמן מסך"]].map(([v,l])=>`<label><input type="radio" name="tfWhen" value="${v}" ${(fixed?"fixed":(t.time||""))===v?"checked":""}> ${l}</label>`).join("")}</div></div>
+      <div class="field" id="tfFixedWrap" ${fixed?"":"hidden"}><label for="tfFixed">באיזו שעה?</label><input id="tfFixed" type="time" value="${fixed?t.time:"16:00"}"></div>
+      <div class="whenprev" id="tfPrev"></div>
     <div class="field"><label>למי המשימה?</label><div class="checks">${S.kids.map(k=>`<label><input type="checkbox" value="${k.id}" ${!t.kids||t.kids.includes(k.id)?"checked":""}> ${esc(k.name)}</label>`).join("")}</div></div>
     </div><div class="foot">${isNew?"":`<button class="btn coral" id="tfDel">מחיקה</button>`}<button class="btn" id="tfSave">שמירה</button></div>`,
   s=>{
@@ -1328,9 +1345,15 @@ function taskForm(t){
     s.querySelector("#tfMinus").onclick=()=>{t.points=Math.max(1,t.points-(t.points>10?5:1));out.textContent=t.points};
     s.querySelector("#tfPlus").onclick=()=>{t.points=t.points+(t.points>=10?5:1);out.textContent=t.points};
     s.querySelectorAll(".emojis button").forEach(b=>b.onclick=()=>s.querySelector("#tfIcon").value=b.dataset.e);
+    const prev=()=>{const v=(s.querySelector('input[name=tfWhen]:checked')||{}).value||"";s.querySelector("#tfFixedWrap").hidden=v!=="fixed";
+      const ids=[...s.querySelectorAll(".checks input")].filter(i=>i.checked).map(i=>i.value),ks=S.kids.filter(k=>ids.includes(k.id)),p=s.querySelector("#tfPrev");
+      if(!v){p.innerHTML="על הכרטיס לא תופיע שעה.";return}
+      const tv=v==="fixed"?s.querySelector("#tfFixed").value:v;
+      p.innerHTML="<b>ככה זה ייראה על הכרטיס של כל ילד:</b>"+ks.map(k=>`<span>${esc(k.name)} <b class="num">${esc(kidTime({time:tv},k))}</b></span>`).join("")+(v==="fixed"?"":"<small>השעה נלקחת מההגדרות של כל ילד (העיפרון ליד השם שלו). כשמשנים אותה שם, היא מתעדכנת כאן לבד.</small>")};
+    s.querySelectorAll('input[name=tfWhen],.checks input').forEach(i=>i.onchange=prev);s.querySelector("#tfFixed").oninput=prev;prev();
     s.querySelector("#tfSave").onclick=()=>{
       t.icon=s.querySelector("#tfIcon").value.trim()||"⭐";t.name=s.querySelector("#tfName").value.trim();if(!t.name){toast("צריך שם למשימה");return}
-      const tv=s.querySelector("#tfTime").value;t.time=tv==="fixed"?s.querySelector("#tfFixed").value:tv;
+      const tv=(s.querySelector('input[name=tfWhen]:checked')||{}).value||"";t.time=tv==="fixed"?s.querySelector("#tfFixed").value:tv;
       const ch=[...s.querySelectorAll(".checks input")].filter(i=>i.checked).map(i=>i.value);t.kids=ch.length===S.kids.length?null:ch;
       const i=S.tasks.findIndex(x=>x.id===t.id);if(i>=0)S.tasks[i]=t;else S.tasks.push(t);save();closeModal();render();toast("נשמר ✓")};
     const del=s.querySelector("#tfDel");if(del)del.onclick=()=>ask("למחוק את המשימה?","נקודות שכבר נצברו עליה יישארו.","מחיקה",()=>{S.tasks=S.tasks.filter(x=>x.id!==t.id);save();render()},true);
@@ -1457,6 +1480,40 @@ ${IMG.lpb?`@font-face{font-family:"LeonP";src:url(${IMG.lpb}) format("truetype")
   if(!REDUCED)setTimeout(()=>{if(d.isConnected){const r=d.querySelector(".stage").getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height*.8,30,["#FFB400","#fff","#FFD54A"])}},520);
 })();
 document.querySelectorAll(".tab .ic").forEach(s=>{const e=s.textContent.trim();if(EMO2IC[e]&&ICONS[EMO2IC[e]])s.innerHTML=icon(e,"")});
+
+/* ================= סידור משימות בלחיצה ארוכה ================= */
+(()=>{
+  let hold=null,drag=null,blockClick=false;
+  const end=()=>{clearTimeout(hold);hold=null};
+  document.addEventListener("pointerdown",e=>{
+    const row=e.target.closest("#taskOrder .listrow");if(!row||e.button>0)return;
+    const x0=e.clientX,y0=e.clientY;
+    hold=setTimeout(()=>{hold=null;drag={row,list:row.parentElement,startY:e.clientY,id:e.pointerId};
+      row.classList.add("dragging");drag.list.classList.add("sorting");try{navigator.vibrate&&navigator.vibrate(30)}catch(x){}},420);
+    hold&&(row._x0=x0,row._y0=y0);
+  });
+  document.addEventListener("pointermove",e=>{
+    if(hold){const r=e.target.closest&&e.target.closest("#taskOrder .listrow");if(!r||Math.abs(e.clientY-(r._y0??e.clientY))>8||Math.abs(e.clientX-(r._x0??e.clientX))>8)end();return}
+    if(!drag)return;e.preventDefault();
+    const {row,list}=drag;row.style.transform=`translateY(${e.clientY-drag.startY}px) scale(1.04)`;
+    const others=[...list.children].filter(x=>x!==row);
+    const idx=others.filter(o=>{const r=o.getBoundingClientRect();return r.top+r.height/2<e.clientY}).length;
+    if(others[idx]!==row.nextElementSibling||(idx===others.length&&row.nextElementSibling)){const top0=row.offsetTop;
+      if(others[idx])list.insertBefore(row,others[idx]);else list.appendChild(row);drag.startY+=row.offsetTop-top0}
+    row.style.transform=`translateY(${e.clientY-drag.startY}px) scale(1.04)`;
+  },{passive:false});
+  document.addEventListener("touchmove",e=>{if(drag)e.preventDefault()},{passive:false});
+  const finish=()=>{end();if(!drag)return;const {row,list}=drag;drag=null;blockClick=true;setTimeout(()=>blockClick=false,400);
+    row.classList.remove("dragging");row.style.transform="";list.classList.remove("sorting");
+    const ids=[...list.querySelectorAll(".listrow")].map(x=>x.dataset.id);
+    const before=S.tasks.map(t=>t.id).join();
+    S.tasks.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
+    if(S.tasks.map(t=>t.id).join()!==before){save();toast("הסדר נשמר ✓")}
+    render()};
+  document.addEventListener("pointerup",finish);document.addEventListener("pointercancel",finish);
+  document.addEventListener("click",e=>{if(blockClick&&e.target.closest("#taskOrder")){e.preventDefault();e.stopImmediatePropagation()}},true);
+  document.addEventListener("contextmenu",e=>{if(e.target.closest("#taskOrder"))e.preventDefault()});
+})();
 render();
 })();
 </script>
