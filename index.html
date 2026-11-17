@@ -746,7 +746,7 @@ const CHAL_T=[
   {i:"🙋",m:[5,7],t:()=>`לשאול את אמא או אבא "במה אפשר לעזור?" ולעשות מה שיגידו`},
   {i:"🎯",m:[2,3,4],t:(n,p)=>`לאסוף ${n} דברים מהרצפה ${p} — הכי מהר שאפשר!`},
   {i:"😄",m:[5,7],t:n=>`לגרום ל-${Math.min(n,5)} אנשים בבית לחייך`},
-  {i:"🤝",m:[5,7],t:()=>`לעזור לאח או לאחות במשהו שהם עושים עכשיו`},
+  {i:"🤝",m:[5,7],sib:1,t:()=>`לעזור לאח או לאחות במשהו שהם עושים עכשיו`},
   {i:"👕",m:[3,5],t:n=>`למצוא ${n} בגדים שלא במקום ולהחזיר אותם לארון או לסל`},
   {i:"📦",m:[5,7],t:()=>`לבחור מגירה אחת או מדף אחד ולסדר אותו מחדש, ממש יפה`},
   {i:"🌟",m:[5,7,10],t:(n,p)=>`לסדר ${p} כאילו אורח חשוב מגיע עוד רגע`},
@@ -755,7 +755,7 @@ const CHAL_T=[
   {i:"🎨",m:[3,5],t:n=>`למצוא ${n} דברים שלא במקום ולסדר אותם לפי צבעים`},
   {i:"🗣️",m:[3,5],t:()=>`להגיד מילה טובה ואמיתית לכל אחד מבני המשפחה`},
   {i:"🏃",m:[2,3],t:n=>`מרוץ נגד השעון: להחזיר ${n} דברים למקום שלהם — ולצעוק "סיימתי!"`},
-  {i:"🧸",m:[5,7],t:()=>`לעזור לאחד הקטנים בבית לסדר את הדברים שלו`},
+  {i:"🧸",m:[5,7],young:1,t:()=>`לעזור לאחד הקטנים בבית לסדר את הדברים שלו`},
   {i:"🍽️",m:[5,7],t:()=>`להיכנס למטבח ולעזור במה שצריך עכשיו`},
   {i:"🔎",m:[3,5],t:()=>`לחפש משהו שהלך לאיבוד בבית — ואם לא מוצאים, לפחות לסדר תוך כדי חיפוש`},
   {i:"👑",m:[5,7],t:(n,p,k)=>g(k,`להיות העוזר האישי של אמא או אבא עד שהטיימר נגמר`,`להיות העוזרת האישית של אמא או אבא עד שהטיימר נגמר`)},
@@ -763,14 +763,49 @@ const CHAL_T=[
   {i:"🎲",m:[3,5],t:n=>`לבחור ${n} דברים בבית שאפשר לסדר יותר יפה — ולסדר אותם`},
   {i:"🦸",m:[3,5],t:(n,p)=>`גיבור על של סדר: להציל ${n} דברים שנשכחו ${p}`},
   {i:"🤫",m:[3,5],t:()=>`לעשות מעשה טוב בשקט, ולהגיד לאמא רק אחרי שהטיימר נגמר`},
-  {i:"🎵",m:[3,5],t:(n,p)=>`לשים שיר בראש ולסדר ${p} עד שהשיר (והטיימר) נגמרים`}
+  {i:"🎵",m:[3,5],t:(n,p)=>`לשים שיר בראש ולסדר ${p} עד שהשיר (והטיימר) נגמרים`},
+  {i:"🧺",m:[5,7],t:()=>`לקפל ערימת כביסה אחת, יפה כמו בחנות בגדים`},
+  {i:"🧦",m:[3,5],t:()=>`מבצע גרביים: למצוא זוג לכל גרב בודדה בסל הכביסה`},
+  {i:"👕",m:[3,5],t:()=>`למיין את סל הכביסה לשלוש ערימות: לבן, כהה וצבעוני`},
+  {i:"👟",m:[2,3],t:()=>`לסדר את כל הנעליים בכניסה בזוגות, ישרים כמו חיילים`},
+  {i:"🍽️",m:[3,5],t:()=>`לערוך את השולחן לארוחה: צלחת, סכו״ם וכוס לכל אחד`},
+  {i:"🧽",m:[3,5],t:()=>`לפנות את השולחן אחרי הארוחה ולנגב אותו עד שהוא מבריק`},
+  {i:"🍴",m:[5,7],min:7,t:()=>`לייבש את הכלים ולהחזיר כל כלי למקום שלו בארון`},
+  {i:"🥄",m:[3,5],t:()=>`לסדר את מגירת הסכו״ם, כל דבר בתא שלו`},
+  {i:"🥤",m:[2,3],t:()=>`למלא קנקן מים קרים ולהעמיד אותו על השולחן לכולם`},
+  {i:"🍎",m:[5,7],min:9,t:()=>`להכין צלחת פירות חתוכים לכל המשפחה`},
+  {i:"🥗",m:[7,10],min:10,t:()=>`להכין סלט ירקות לארוחה (מבוגר בודק את הסכין)`},
+  {i:"🪴",m:[3,5],t:()=>`להשקות את כל העציצים בבית`},
+  {i:"🗑️",m:[3,5],min:7,t:()=>`לרוקן את כל הפחים הקטנים בבית לשקית אחת גדולה`},
+  {i:"🧹",m:[5,7],t:()=>`לטאטא את המטבח, כולל מתחת לשולחן!`},
+  {i:"🌬️",m:[5,7],t:()=>`לטאטא את המרפסת או את הכניסה לבית`},
+  {i:"🚪",m:[3,4],t:()=>`לנגב במטלית את כל ידיות הדלתות בבית`},
+  {i:"🪑",m:[3,5],t:()=>`להחזיר את כל הכיסאות לשולחן ולנגב את המושבים`},
+  {i:"🪶",m:[3,5],t:()=>`לנגב אבק מהמדפים והשידות בחדר אחד`},
+  {i:"🛁",m:[3,5],t:()=>`לסדר את המגבות באמבטיה: לקפל, לתלות וליישר`},
+  {i:"🪞",m:[2,3],min:6,t:()=>`לנגב את המראה באמבטיה עד שהיא נוצצת`},
+  {i:"🛋️",m:[5,7],t:()=>`לסדר את הסלון: כריות במקום, שמיכות מקופלות, רצפה פנויה`},
+  {i:"📚",m:[5,7],t:()=>`לסדר את מדף הספרים, מהגבוה לנמוך`},
+  {i:"🧥",m:[3,4],t:()=>`לתלות את כל המעילים והתיקים שזרוקים בבית`},
+  {i:"🎒",m:[3,5],t:()=>`להכין את התיק למחר, הכל מוכן ומסודר`},
+  {i:"🛏️",m:[3,5],t:()=>`לסדר את המיטה שלך כמו במלון: סדין מתוח וכרית תפוחה`},
+  {i:"🎲",m:[5,7],t:()=>`לסדר את מדף המשחקים, כל משחק בקופסה שלו`}
 ];
-function makeMission(kid){
-  const age=kid.age||8,ns=age<7?[3,4,5]:age<10?[5,6,7]:[7,8,10];
+function chalFits(T,kid){
+  const age=+kid.age||8,others=S.kids.filter(k=>k.id!==kid.id);
+  if(T.min&&age<T.min)return false;
+  if(T.sib&&!others.length)return false;
+  if(T.young&&!others.some(k=>(+k.age||0)>0&&(+k.age)<age))return false;
+  return true;
+}
+function makeMission(kid,skip){
+  const age=+kid.age||8,ns=age<7?[3,4,5]:age<10?[5,6,7]:[7,8,10];
   const used=S.chalHist.slice(-10).map(h=>h.ti);
-  let pool=CHAL_T.map((_,i)=>i).filter(i=>!used.includes(i));if(!pool.length)pool=CHAL_T.map((_,i)=>i);
+  const fit=CHAL_T.map((_,i)=>i).filter(i=>chalFits(CHAL_T[i],kid)&&i!==skip);
+  let pool=fit.filter(i=>!used.includes(i));if(!pool.length)pool=fit.length?fit:CHAL_T.map((_,i)=>i);
   const ti=pool[Math.floor(Math.random()*pool.length)],T=CHAL_T[ti];
-  const n=ns[Math.floor(Math.random()*ns.length)],p=PLACES[Math.floor(Math.random()*PLACES.length)];
+  const places=S.kids.length>1?PLACES:PLACES.filter(x=>x!=="בחדר של האחים");
+  const n=ns[Math.floor(Math.random()*ns.length)],p=places[Math.floor(Math.random()*places.length)];
   return {ti,i:T.i,m:T.m[Math.floor(Math.random()*T.m.length)],t:T.t(n,p,kid)};
 }
 const chalMission=c=>c.mo||MISSIONS[c.mi]||MISSIONS[0];
@@ -1123,11 +1158,14 @@ function vChal(){
     <div class="mission"><div class="mi">${m.i}</div><p>${esc(m.t)}</p>
       <div class="row" style="justify-content:center;gap:8px;margin-bottom:14px"><span class="pill">⏱ ${m.m} דקות</span><span class="pill" style="background:var(--sun-2);color:#8a6100">🏅 ${S.settings.chalPts} נק׳</span></div>
       ${action}</div></section>
-    ${c.status==="new"?`<button class="btn ghost" data-act="spin2">🔄 הגרלה חדשה</button>`:""}`;
+    ${c.status==="new"?`<button class="btn ghost" data-act="chalSwap">🔄 משימה אחרת</button><p class="muted small" style="text-align:center">הילד נשאר אותו ילד, רק המשימה מתחלפת</p>`:""}`;
 }
 function pickChallenge(){
-  const recent=S.chalHist.slice(-Math.max(0,S.kids.length-2)).map(h=>h.kid);
-  let pool=S.kids.filter(k=>!recent.includes(k.id));if(!pool.length)pool=S.kids;
+  const ids=S.kids.map(k=>k.id),round=new Set();let last=null;
+  S.chalHist.forEach(h=>{if(!ids.includes(h.kid))return;round.add(h.kid);last=h.kid;if(round.size>=ids.length)round.clear()});
+  let pool=S.kids.filter(k=>!round.has(k.id));
+  if(!round.size&&S.kids.length>1)pool=pool.filter(k=>k.id!==last);
+  if(!pool.length)pool=S.kids;
   const kid=pool[Math.floor(Math.random()*pool.length)];
   return {kid,mo:makeMission(kid)};
 }
@@ -1424,6 +1462,9 @@ document.addEventListener("click",e=>{
     case"screenTimer":{const k=curKid();startTimer(k.screen,"זמן מסך · "+k.name,"screen",k.id);UI.tab="timers";render();break}
     case"spin":spin();break;
     case"spin2":S.chal=null;save();render();setTimeout(spin,50);break;
+    case"chalSwap":{const c=S.chal,k=c&&S.kids.find(x=>x.id===c.kidId);if(!k||c.status!=="new")break;
+      const mo=makeMission(k,c.mo&&c.mo.ti);c.mo=mo;const h=S.chalHist[S.chalHist.length-1];if(h&&h.kid===k.id&&h.date===c.date)h.ti=mo.ti;
+      sfx.tick&&sfx.tick();save();render();break}
     case"chalStart":{const c=S.chal,m=chalMission(c),k=S.kids.find(x=>x.id===c.kidId);c.status="running";save();startTimer(m.m,"כוכב היום · "+(k?k.name:""),"chal",c.kidId);break}
     case"chalDone":awardChal(S.settings.chalPts);break;
     case"chalLate":awardChal(Math.round(S.settings.chalPts/2));break;
